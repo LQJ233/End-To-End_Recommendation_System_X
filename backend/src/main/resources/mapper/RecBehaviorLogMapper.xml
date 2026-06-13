@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.recsys.infrastructure.mysql.RecBehaviorLogMapper">
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO rec_behavior_log
+            (user_id, item_id, behavior_type, timestamp, request_id, scene, source, created_at)
+        VALUES
+        <foreach collection="list" item="it" separator=",">
+            (#{it.userId}, #{it.itemId}, #{it.behaviorType}, #{it.timestamp},
+             #{it.requestId}, #{it.scene}, #{it.source}, NOW())
+        </foreach>
+    </insert>
+</mapper>

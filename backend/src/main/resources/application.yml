@@ -1,0 +1,218 @@
+﻿spring:
+  application:
+    name: End-To-End_Recommendation_System_X-backend
+  profiles:
+    active: local
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+  datasource:
+    url: jdbc:mysql://${app.mysql.host}:${app.mysql.port}/${app.mysql.database}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${app.mysql.username}
+    password: ${app.mysql.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+      connection-timeout: 3000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      pool-name: recsys-hikari
+  data:
+    redis:
+      host: ${app.redis.host}
+      port: ${app.redis.port}
+      password: ${app.redis.password:}
+      database: ${app.redis.database:0}
+      timeout: 3s
+      lettuce:
+        pool:
+          enabled: true
+          max-active: 64
+          max-idle: 32
+          min-idle: 8
+          max-wait: 1s
+  kafka:
+    bootstrap-servers: ${app.kafka.bootstrapServers}
+    consumer:
+      group-id: ${app.kafka.consumerGroup}
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    listener:
+      ack-mode: batch
+      type: batch
+
+server:
+  port: ${app.server.backendPort:8080}
+  tomcat:
+    threads:
+      max: 400
+      min-spare: 50
+    accept-count: 200
+    max-connections: 8192
+    connection-timeout: 5000
+  compression:
+    enabled: true
+    mime-types: application/json,text/plain
+    min-response-size: 1024
+
+# Resilience4j: 鎺ㄧ悊璋冪敤鐔旀柇 + 瓒呮椂
+resilience4j:
+  circuitbreaker:
+    instances:
+      inference:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 50
+        minimumNumberOfCalls: 20
+        failureRateThreshold: 50
+        slowCallDurationThreshold: 2000ms
+        slowCallRateThreshold: 60
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+  timelimiter:
+    instances:
+      inference:
+        timeoutDuration: 3s
+        cancelRunningFuture: true
+
+flyway:
+  enabled: true
+
+spring.flyway:
+  enabled: ${flyway.enabled}
+  locations: classpath:db/migration
+  baseline-on-migrate: true
+  baseline-version: 0
+  validate-on-migrate: true
+  out-of-order: false
+  table: flyway_schema_history
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: AUTO
+
+# Custom recsys block; values are loaded from conf/application-local.yml via ConfigLoader.
+app:
+  configPath: E:/End-To-End_Recommendation_System_X/conf/application-local.yml
+  server:
+    backendPort: 8080
+    inferencePort: 9000
+    trackPort: 8088
+  mysql:
+    host: localhost
+    port: 3306
+    database: end_to_end_recommendation_system_x
+    username: root
+    password: change_me
+  redis:
+    host: localhost
+    port: 6379
+    password: ""
+    database: 0
+  kafka:
+    bootstrapServers: localhost:9092
+    behaviorTopic: user_behavior_log
+    consumerGroup: End-To-End_Recommendation_System_X-consumer
+  inference:
+    baseUrl: http://localhost:9000/api/v1
+    timeoutMs: 3000
+    maxTotal: 200          # HttpClient5 鎬昏繛鎺ユ暟
+    maxPerRoute: 100       # 鍗?host 骞跺彂涓婇檺
+  executor:
+    inference:
+      core: 32
+      max: 64
+      queue: 200
+      keepAliveSec: 60
+    snapshot:
+      core: 4
+      max: 8
+      queue: 1000
+    kafkaFlush:
+      core: 2
+      max: 4
+      queue: 50
+  auth:
+    jwtSecret: change_me_to_a_long_random_secret_change_me_to_a_long_random_secret
+    accessTokenExpireMinutes: 120
+    refreshTokenExpireDays: 30
+    bcryptStrength: 10
+    defaultRole: USER
+    adminRole: ADMIN
+    enableTokenBlacklist: true
+    loginRateLimit:
+      ipMaxPerWindow: 30        # 鍚屼竴 IP 鍦?windowSec 鍐呮渶澶氬け璐ユ鏁?      windowSec: 300
+      userMaxFailures: 5        # 鍚屼竴璐﹀彿杩炵画澶辫触 N 娆″悗閿佸畾
+      userLockSec: 900          # 閿佸畾鏃堕暱
+  recommendation:
+    scene: home
+    pageSize: 20
+    candidateTtlHours: 24
+    cacheRecallMaxSize: 50
+    cacheRecallMaxTimes: 10
+    cacheRecallTtlDays: 3
+  fallback:
+    enableHotItems: true
+    hotItemSize: 500
+    useOldRedisCandidate: true
+  cors:
+    allowedOrigins:
+      - http://localhost:5173
+
+logging:
+  level:
+    com.example.recsys: INFO
+    org.apache.kafka: WARN
+  file:
+    name: E:/End-To-End_Recommendation_System_X/logs/backend.log
+
+# Spring Boot Actuator: 鏆撮湶鍋ュ悍妫€鏌?+ 鐔旀柇鍣ㄧ姸鎬? 鐢ㄤ簬鍘嬫祴/鐩戞帶
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,circuitbreakers,circuitbreakerevents,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+  health:
+    circuitbreakers:
+      enabled: true
+  tracing:
+    enabled: true
+    # 鏈湴榛樿 100% 閲囨牱, 鐪熶笂绾垮啀鎸夐渶璋?    sampling:
+      probability: 1.0
+    propagation:
+      type: w3c
+  observations:
+    annotations:
+      enabled: true
+
+# OTLP 榛樿 endpoint (Jaeger / Tempo / Otel-Collector); 娌℃湁 collector 鏃舵妸 enabled 鍏虫帀
+otel:
+  exporter:
+    otlp:
+      endpoint: http://localhost:4317
+      enabled: false      # 鏈湴鏃?collector 榛樿涓嶅鍑? 浠呭仛 traceparent 浼犳挱
+  service:
+    name: End-To-End_Recommendation_System_X-backend
+  metrics:
+    exporter: none
+  logs:
+    exporter: none

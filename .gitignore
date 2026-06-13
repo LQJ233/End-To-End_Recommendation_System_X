@@ -1,0 +1,183 @@
+# ============================================
+# IDE 和编辑器
+# ============================================
+.idea/
+.vscode/
+!.vscode/extensions.json
+*.iml
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.directory
+
+# ============================================
+# 构建产物
+# ============================================
+# Java/Maven
+backend/target/
+backend/build/
+backend/*.jar
+backend/.gradle/
+
+# Node.js
+frontend/node_modules/
+frontend/dist/
+frontend/.nuxt/
+frontend/.cache/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ============================================
+# 日志文件
+# ============================================
+logs/
+*.log
+*.log.*
+npm-debug.log*
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ============================================
+# 虚拟环境
+# ============================================
+.venv/
+venv/
+env/
+ENV/
+.env.local
+.env.*.local
+
+# ============================================
+# 敏感配置文件（包含密码、密钥等）
+# ============================================
+# 本地环境配置（优先级最高，包含所有敏感信息）
+conf/application-local.yml
+conf/application-local.override.yml
+
+# 后端本地配置
+backend/src/main/resources/application-local.yml
+backend/src/main/resources/application-dev.yml
+
+# 前端环境文件
+frontend/.env.local
+frontend/.env.*.local
+
+# ============================================
+# 数据文件
+# ============================================
+# 原始天池数据集（可能很大）
+data/raw/*.csv
+data/raw/*.zip
+data/raw/*.tar.gz
+!data/raw/.gitkeep
+
+# 处理后的数据集
+data/processed/*.parquet
+data/processed/*.csv
+data/processed/*.pkl
+!data/processed/.gitkeep
+
+# 模型文件（大文件，应使用 Git LFS）
+data/model/*.pt
+data/model/*.pth
+data/model/*.bin
+data/model/*.onnx
+data/model/user_embedding_table.*
+data/model/recall_user_tower.*
+data/model/ranking_mmoe.*
+!data/model/.gitkeep
+
+# 数据库导出和备份
+*.sql.bak
+*.sql.backup
+*.dump
+
+# ============================================
+# 操作系统特定文件
+# ============================================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+.directory
+
+# ============================================
+# 本地测试和临时文件
+# ============================================
+*.tmp
+*.temp
+*.bak
+test_output/
+debug/
+
+# ============================================
+# IDE 用户设置（可选，用户特定设置）
+# ============================================
+# VS Code 用户设置（可以选择保留项目设置）
+# .vscode/settings.json  # 如果有项目级设置，可以不加这行
+
+# IntelliJ 用户设置
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+.idea/vcs.xml
+.idea/compiler.xml
+.idea/runConfigurations/
+
+# ============================================
+# Docker 相关（如果使用本地 Docker）
+# ============================================
+# Docker Compose 生成的文件
+docker-compose.override.yml
+.dockerignore
+
+# ============================================
+# Node 和 npm 缓存
+# ============================================
+.npm
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ============================================
+# Python 包管理
+# ============================================
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.hypothesis/
+
+# ============================================
+# IDE 生成的文件
+# ============================================
+.gradle
+.classpath
+.project
+.settings
+*.sublime-project
+*.sublime-workspace
