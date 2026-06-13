@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.recsys.infrastructure.mysql.BizUserMapper">
+
+    <resultMap id="BizUserMap" type="com.example.recsys.domain.entity.BizUser">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="username" property="username"/>
+        <result column="password_hash" property="passwordHash"/>
+        <result column="nickname" property="nickname"/>
+        <result column="avatar_url" property="avatarUrl"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="gender" property="gender"/>
+        <result column="age_level" property="ageLevel"/>
+        <result column="default_geohash" property="defaultGeohash"/>
+        <result column="user_type" property="userType"/>
+        <result column="status" property="status"/>
+        <result column="last_login_at" property="lastLoginAt"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <!--
+        Admin 分页查询:
+        - 角色过滤通过 EXISTS 子查询完成, 保证一行用户只返回一次, total 正确;
+        - PaginationInnerInterceptor 会自动包装 SELECT COUNT(*) 在外层.
+    -->
+    <select id="selectAdminPage" resultMap="BizUserMap">
+        SELECT u.*
+        FROM biz_user u
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    u.username LIKE CONCAT('%', #{keyword}, '%')
+                    OR u.nickname LIKE CONCAT('%', #{keyword}, '%')
+                    OR u.phone    LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+            <if test="status != null">
+                AND u.status = #{status}
+            </if>
+            <if test="roleCode != null and roleCode != ''">
+                AND EXISTS (
+                    SELECT 1 FROM biz_user_role r
+                    WHERE r.user_id = u.user_id
+                      AND r.role_code = #{roleCode}
+                )
+            </if>
+        </where>
+        ORDER BY u.created_at DESC
+    </select>
+</mapper>

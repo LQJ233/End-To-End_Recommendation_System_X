@@ -1,0 +1,17 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.9.2
+pyyaml==6.0.2
+redis==5.0.8
+numpy==1.26.4
+pymilvus==2.4.4
+torch==2.3.1
+pandas==2.2.2
+pyarrow==17.0.0
+scikit-learn==1.5.1
+pymysql==1.1.1
+bcrypt==4.2.0
+apache-flink==1.18.1
+pyspark==3.5.1
+prometheus-fastapi-instrumentator==7.0.0
+prometheus_client==0.20.0

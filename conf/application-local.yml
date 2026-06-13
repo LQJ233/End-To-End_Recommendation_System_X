@@ -1,0 +1,111 @@
+﻿# 鍗曟満 Windows 鏈湴閰嶇疆鏂囦欢
+# 璇存槑锛氭湰鏂囦欢鍙斁杩炴帴淇℃伅銆佺鍙ｃ€佽矾寰勫拰鎺ㄨ崘绛栫暐鍙傛暟锛涗笟鍔′唬鐮佷笉瑕佺‖缂栫爜杩欎簺鍊笺€?
+server:
+  backendPort: 8080
+  inferencePort: 9000
+  frontendPort: 5173
+  trackPort: 8088
+
+mysql:
+  host: localhost
+  port: 3306
+  database: end_to_end_recommendation_system_x
+  username: root
+  password: change_me
+
+redis:
+  host: localhost
+  port: 6379
+  password: ""
+  database: 0
+
+auth:
+  jwtSecret: change_me_to_a_long_random_secret
+  accessTokenExpireMinutes: 120
+  refreshTokenExpireDays: 30
+  bcryptStrength: 10
+  defaultRole: USER
+  adminRole: ADMIN
+  enableTokenBlacklist: true
+
+kafka:
+  bootstrapServers: localhost:9092
+  behaviorTopic: user_behavior_log
+  consumerGroup: End-To-End_Recommendation_System_X-consumer
+  partitions: 3
+  retentionMs: 604800000
+
+milvus:
+  host: localhost
+  port: 19530
+  collection: item_embedding
+  metricType: COSINE
+  indexType: HNSW
+
+model:
+  modelVersion: 20260526_0000
+  recallModelPath: E:/End-To-End_Recommendation_System_X/data/model/recall_user_tower.pt
+  rankingModelPath: E:/End-To-End_Recommendation_System_X/data/model/ranking_mmoe.pt
+  featureConfigPath: E:/End-To-End_Recommendation_System_X/data/model/feature_config.json
+  userEmbeddingPath: E:/End-To-End_Recommendation_System_X/data/model/user_embedding_table.pt
+  unknownUserId: <UNK>
+
+recommendation:
+  scene: home
+  recallSize: 500
+  vectorRecallSize: 500
+  lbsRecallSize: 200
+  tagRecallSize: 300
+  pageSize: 20
+  prefetchDistancePx: 200
+  candidateTtlHours: 24
+  cacheRecallMaxSize: 50
+  cacheRecallMaxTimes: 10
+  cacheRecallTtlDays: 3
+  lbsGeoHashPrefixLength: 5
+  lbsMaxDistanceKm: 50
+  tagRecallDimensions:
+    - item_category
+    - brand
+    - style
+    - price_bucket
+  recallMergeWeight:
+    vector: 0.50
+    tag: 0.20
+    lbs: 0.15
+    cache: 0.15
+  rankScoreCtrWeight: 0.7
+  rankScoreCvrWeight: 0.3
+
+path:
+  projectRoot: E:/End-To-End_Recommendation_System_X
+  logDir: E:/End-To-End_Recommendation_System_X/logs
+  rawDataDir: E:/End-To-End_Recommendation_System_X/data/raw
+  processedDataDir: E:/End-To-End_Recommendation_System_X/data/processed
+  modelDir: E:/End-To-End_Recommendation_System_X/data/model
+
+training:
+  trainWindowDays: 7
+  scheduleCron: "0 0 0 * * ?"
+  enforceTimeSplit: true
+  unkUserDropRate: 0.05
+  # 鏁版嵁闆? 澶╂睜闃块噷宸村反绉诲姩鎺ㄨ崘绠楁硶 (https://tianchi.aliyun.com/dataset/46)
+  # 鏈湡鏈€澶氫娇鐢?1000 涓囪琛屼负鏁版嵁璁粌
+  maxBehaviorRows: 10000000
+  recallNegativeSample:
+    globalRandomRatio: 1
+    inBatchNegative: true
+  rankingNegativeSample:
+    # 澶╂睜鏁版嵁鏃犳洕鍏夎褰? 绂荤嚎璁粌鐢ㄦ湭浜や簰璐熼噰鏍蜂唬鏇?鏇濆厜鏈偣鍑?
+    useExposedNotClicked: false
+    fallbackStrategy: random_uninteracted
+
+fallback:
+  enableHotItems: true
+  hotItemSize: 500
+  useOldRedisCandidate: true
+
+# CORS 鐧藉悕鍗?(鐢熶骇鐜蹇呴』鍐欑湡瀹炲煙鍚? 绂佹 *)
+cors:
+  allowedOrigins:
+    - http://localhost:5173
