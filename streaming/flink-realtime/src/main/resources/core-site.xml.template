@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--
+  Hadoop S3A 配置模板。
+
+  仓库里不保存真实凭据：scripts/realtime_start.sh 会在 mvn package 之前，
+  用项目根目录 .env.local 里的值渲染出 core-site.xml（该文件已被 .gitignore 忽略）。
+  模板变量：MINIO_ENDPOINT / MINIO_ACCESS_KEY / MINIO_SECRET_KEY
+-->
+<configuration>
+    <property>
+        <name>fs.s3a.endpoint</name>
+        <value>${MINIO_ENDPOINT}</value>
+    </property>
+    <property>
+        <name>fs.s3a.access.key</name>
+        <value>${MINIO_ACCESS_KEY}</value>
+    </property>
+    <property>
+        <name>fs.s3a.secret.key</name>
+        <value>${MINIO_SECRET_KEY}</value>
+    </property>
+    <property>
+        <name>fs.s3a.path.style.access</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>fs.s3a.connection.ssl.enabled</name>
+        <value>false</value>
+    </property>
+    <property>
+        <name>fs.s3a.impl</name>
+        <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
+    </property>
+</configuration>

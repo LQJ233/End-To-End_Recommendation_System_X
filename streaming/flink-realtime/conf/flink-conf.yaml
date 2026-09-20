@@ -1,0 +1,21 @@
+# 说明：当前项目通过 Maven 依赖 + 本地 MiniCluster 运行 Flink 作业，
+# 不依赖这份 standalone 配置，这里仅作为参考模板保留。
+# 其中的凭据使用占位符，实际值来自项目根目录的 .env.local（不纳入版本管理）。
+jobmanager.rpc.address: 127.0.0.1
+jobmanager.memory.process.size: 1024m
+taskmanager.memory.process.size: 2048m
+parallelism.default: 1
+rest.port: 8082
+execution.checkpointing.interval: 10s
+state.backend.type: hashmap
+
+s3.endpoint: http://127.0.0.1:9000
+s3.access-key: ${MINIO_ACCESS_KEY}
+s3.secret-key: ${MINIO_SECRET_KEY}
+s3.path.style.access: true
+
+fs.s3a.endpoint: http://127.0.0.1:9000
+fs.s3a.access.key: ${MINIO_ACCESS_KEY}
+fs.s3a.secret.key: ${MINIO_SECRET_KEY}
+fs.s3a.path.style.access: true
+fs.s3a.connection.ssl.enabled: false

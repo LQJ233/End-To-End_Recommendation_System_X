@@ -1,0 +1,74 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: backend
+  # 本地凭据从项目根目录的 .env.local 读取（该文件不纳入版本管理，模板见 .env.local.example）
+  # 生产/CI 环境也可直接用同名环境变量注入，优先级高于该文件
+  config:
+    import: optional:file:../.env.local[.properties]
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:ecommerce}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: ${MYSQL_USER:}
+    password: ${MYSQL_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  jackson:
+    time-zone: Asia/Shanghai
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      timeout: 2s
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      retries: 3
+      properties:
+        max.block.ms: 200
+        request.timeout.ms: 1000
+        delivery.timeout.ms: 2000
+
+kafka:
+  topics:
+    behavior-events: behavior-events
+
+recommendation:
+  serving:
+    base-url: http://127.0.0.1:8000
+    connect-timeout-ms: 200
+    read-timeout-ms: 300
+    max-attempts: 2
+    failure-threshold: 3
+    open-duration-ms: 5000
+
+outbox:
+  publish-interval-ms: 2000
+  max-retries: 10
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    banner: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+
+jwt:
+  secret: ${JWT_SECRET:}
+  expiration-ms: 86400000

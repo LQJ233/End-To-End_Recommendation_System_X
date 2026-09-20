@@ -1,0 +1,56 @@
+CREATE TABLE IF NOT EXISTS `user` (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(64) NOT NULL UNIQUE,
+    password_hash VARCHAR(128) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS item (
+    id BIGINT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    category_id BIGINT NOT NULL,
+    brand_id BIGINT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    image_url VARCHAR(500) NULL,
+    status TINYINT NOT NULL DEFAULT 1,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS behavior_event (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    event_id VARCHAR(96) NOT NULL UNIQUE,
+    user_id VARCHAR(96) NOT NULL,
+    session_id VARCHAR(96) NOT NULL,
+    item_id BIGINT NULL,
+    event_type VARCHAR(32) NOT NULL,
+    page VARCHAR(32) NOT NULL,
+    position INT NULL,
+    source VARCHAR(32) NOT NULL,
+    request_id VARCHAR(96) NULL,
+    recommendation_id VARCHAR(96) NULL,
+    event_time BIGINT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS recommendation_log (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    request_id VARCHAR(96) NOT NULL,
+    recommendation_id VARCHAR(96) NOT NULL,
+    user_id VARCHAR(96) NOT NULL,
+    scene VARCHAR(32) NOT NULL,
+    item_ids TEXT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO item (id, title, category_id, brand_id, price, image_url, status)
+VALUES
+    (1001, '广告商品 1001 · 类目 6406 · 品牌 95471', 6406, 95471, 170.00, NULL, 1),
+    (1002, '广告商品 1002 · 类目 6406 · 品牌 95472', 6406, 95472, 299.00, NULL, 1),
+    (1003, '广告商品 1003 · 类目 6407 · 品牌 95473', 6407, 95473, 89.00, NULL, 1),
+    (1004, '广告商品 1004 · 类目 6408 · 品牌 95474', 6408, 95474, 459.00, NULL, 1),
+    (1005, '广告商品 1005 · 类目 6409 · 品牌 95475', 6409, 95475, 129.00, NULL, 1),
+    (1006, '广告商品 1006 · 类目 6410 · 品牌 95476', 6410, 95476, 219.00, NULL, 1),
+    (1007, '广告商品 1007 · 类目 6406 · 品牌 95477', 6406, 95477, 349.00, NULL, 1),
+    (1008, '广告商品 1008 · 类目 6411 · 品牌 95478', 6411, 95478, 59.00, NULL, 1);

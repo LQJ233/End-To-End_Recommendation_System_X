@@ -1,0 +1,61 @@
+# ==================== 依赖与虚拟环境 ====================
+**/.venv/
+airflow_venv/
+**/node_modules/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+**/target/
+**/dist/
+*.class
+
+# ==================== 数据与模型产物 ====================
+# 原始数据集（体积大，需按 README 自行下载）
+Data/
+# DataX 官方发行包与压缩包（保留项目自己的作业配置）
+data-sync/datax/*
+!data-sync/datax/job/
+!data-sync/datax/job/item_full_sync.json
+!data-sync/datax/create_sync_table.sql
+data-sync/datax.tar.gz
+# 训练产物（模型、向量、parquet、milvus 本地库）
+offline/training_output/
+**/*.parquet
+**/*.db
+**/milvus.db*
+
+# ==================== 运行时数据与日志 ====================
+monitoring/prometheus/data/
+monitoring/grafana/data/
+monitoring/grafana/logs/
+monitoring/grafana/plugins/
+monitoring/logs/
+streaming/flink-realtime/logs/
+data-sync/flume/spool/
+data-sync/flume/logs/
+airflow/logs/
+airflow/*.log
+airflow/*.out
+airflow/*.err
+airflow/airflow.db
+airflow/airflow.cfg
+airflow/webserver_config.py
+*.pid
+*.pid.stopped
+
+# ==================== 本地凭据（绝不提交） ====================
+.env.local
+backend/src/main/resources/application-local.yml
+streaming/flink-realtime/src/main/resources/core-site.xml
+
+# ==================== 不公开的文档 ====================
+docs/
+agent.md
+AGENTS.md
+
+# ==================== 编辑器与系统文件 ====================
+.DS_Store
+.obsidian/
+.idea/
+*.iml
+.vscode/

@@ -1,0 +1,64 @@
+{
+  "job": {
+    "setting": {
+      "speed": {
+        "channel": 1
+      }
+    },
+    "content": [
+      {
+        "reader": {
+          "name": "mysqlreader",
+          "parameter": {
+            "username": "${MYSQL_USER}",
+            "password": "${MYSQL_PASSWORD}",
+            "column": [
+              "id",
+              "title",
+              "category_id",
+              "brand_id",
+              "price",
+              "image_url",
+              "status"
+            ],
+            "connection": [
+              {
+                "table": [
+                  "item"
+                ],
+                "jdbcUrl": [
+                  "jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?useUnicode=true&characterEncoding=utf8"
+                ]
+              }
+            ]
+          }
+        },
+        "writer": {
+          "name": "mysqlwriter",
+          "parameter": {
+            "username": "${MYSQL_USER}",
+            "password": "${MYSQL_PASSWORD}",
+            "writeMode": "replace",
+            "column": [
+              "id",
+              "title",
+              "category_id",
+              "brand_id",
+              "price",
+              "image_url",
+              "status"
+            ],
+            "connection": [
+              {
+                "table": [
+                  "item_datax_sync"
+                ],
+                "jdbcUrl": "jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?useUnicode=true&characterEncoding=utf8"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}
